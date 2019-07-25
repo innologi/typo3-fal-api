@@ -29,12 +29,31 @@ class MockFileFactory implements SingletonInterface
 
     /**
      *
+     * @var string
+     */
+    protected $sitePath;
+
+    /**
+     *
      * @param ResourceFactory $resourceFactory
      * @return void
      */
     public function injectResourceFactory(ResourceFactory $resourceFactory)
     {
         $this->resourceFactory = $resourceFactory;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    protected function getSitePath()
+    {
+        if ($this->sitePath === null) {
+            // @extensionScannerIgnoreLine
+            $this->sitePath = \version_compare(TYPO3_version, '9.4', '<') ? PATH_site : \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
+        }
+        return $this->sitePath;
     }
 
     /**
@@ -65,7 +84,7 @@ class MockFileFactory implements SingletonInterface
         // @TODO do we check if the file exists? after all we rely on filemtime()
         $storageObject = $this->resourceFactory->getStorageObject($storageUid);
         // strip off the absolute path and storage basePath if present
-        $absolutePathPart = PATH_site . $storageObject->getConfiguration()['basePath'];
+        $absolutePathPart = $this->getSitePath() . $storageObject->getConfiguration()['basePath'];
         // file identifier is relative to storage basePath
         // @TODO identifiers apparently are stored with a prefixed slash. Debug if we need to keep it here as well
         $identifier = strpos($filePath, $absolutePathPart) === 0 ? str_replace($absolutePathPart, '', $filePath) : $filePath;
