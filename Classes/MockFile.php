@@ -84,9 +84,11 @@ class MockFile extends \TYPO3\CMS\Core\Resource\File
         if (! $this->deleted) {
             // @extensionScannerIgnoreLine
             $filePath = (\version_compare(TYPO3_version, '9.4', '<') ? PATH_site : \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/') . $this->getPublicUrl();
-            @unlink($filePath);
-            $this->setDeleted();
+            if (@unlink($filePath)) {
+                $this->setDeleted();
+            }
         }
+        return $this->deleted;
     }
 
     /**
