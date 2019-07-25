@@ -3,6 +3,8 @@ namespace Innologi\TYPO3FalApi;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * FileReference Domain Object factory
@@ -31,17 +33,35 @@ class FileReferenceFactory implements SingletonInterface
 
     /**
      *
-     * @var \TYPO3\CMS\Core\Resource\ResourceFactory
-     * @inject
+     * @var ResourceFactory
      */
     protected $resourceFactory;
 
     /**
      *
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @inject
+     * @var ObjectManagerInterface
      */
     protected $objectManager;
+
+    /**
+     *
+     * @param ResourceFactory $resourceFactory
+     * @return void
+     */
+    public function injectResourceFactory(ResourceFactory $resourceFactory)
+    {
+        $this->resourceFactory = $resourceFactory;
+    }
+
+    /**
+     *
+     * @param ObjectManagerInterface $objectManager
+     * @return void
+     */
+    public function injectObjectManager(ObjectManagerInterface $objectManager)
+    {
+        $this->objectManager = $objectManager;
+    }
 
     /**
      * Creates and returns domain object from filepath.
@@ -75,6 +95,7 @@ class FileReferenceFactory implements SingletonInterface
         $object = $this->objectManager->get(FileReference::class);
         // all you really need is an 'uid_local' key with the File uid as value for it
         // to persist correctly. Below method will throw an exception if missing.
+        // @TODO document why you're setting a FileReference as the original resource to our new FileReference
         $object->setOriginalResource(
             $this->resourceFactory->createFileReferenceObject($data)
         );

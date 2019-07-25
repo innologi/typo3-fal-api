@@ -2,6 +2,7 @@
 namespace Innologi\TYPO3FalApi;
 
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -16,8 +17,7 @@ class MockFileFactory implements SingletonInterface
 
     /**
      *
-     * @var \TYPO3\CMS\Core\Resource\ResourceFactory
-     * @inject
+     * @var ResourceFactory
      */
     protected $resourceFactory;
 
@@ -26,6 +26,16 @@ class MockFileFactory implements SingletonInterface
      * @var array
      */
     protected $mockFileInstances = [];
+
+    /**
+     *
+     * @param ResourceFactory $resourceFactory
+     * @return void
+     */
+    public function injectResourceFactory(ResourceFactory $resourceFactory)
+    {
+        $this->resourceFactory = $resourceFactory;
+    }
 
     /**
      * Returns MockFile domain object from filepath.

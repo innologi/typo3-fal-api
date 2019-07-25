@@ -2,6 +2,7 @@
 namespace Innologi\TYPO3FalApi;
 
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
@@ -50,8 +51,7 @@ class FileReferenceRepository implements SingletonInterface
 
     /**
      *
-     * @var \TYPO3\CMS\Core\Resource\ResourceFactory
-     * @inject
+     * @var ResourceFactory
      */
     protected $resourceFactory;
 
@@ -60,6 +60,16 @@ class FileReferenceRepository implements SingletonInterface
      * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
      */
     protected $beUser;
+
+    /**
+     *
+     * @param ResourceFactory $resourceFactory
+     * @return void
+     */
+    public function injectResourceFactory(ResourceFactory $resourceFactory)
+    {
+        $this->resourceFactory = $resourceFactory;
+    }
 
     /**
      * Injects DataHandler
