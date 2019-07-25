@@ -262,6 +262,7 @@ class FileReferenceRepository implements SingletonInterface
      */
     public function findOneByData(array $data)
     {
+        // @extensionScannerIgnoreLine
         /* @var $databaseConnection \TYPO3\CMS\Core\Database\DatabaseConnection */
         $databaseConnection = $GLOBALS['TYPO3_DB'];
         $databaseConnection->store_lastBuiltQuery = true;
@@ -273,6 +274,7 @@ class FileReferenceRepository implements SingletonInterface
         foreach ($data as $property => $value) {
             $where[] = $property . '=' . $databaseConnection->fullQuoteStr($value, $this->referenceTable);
         }
+        // @extensionScannerIgnoreLine
         $where = empty($where) ? '' : join(' ' . DatabaseConnection::AND_Constraint . ' ', $where);
 
         $row = $databaseConnection->exec_SELECTgetSingleRow('*', $this->referenceTable, $where, '', 'uid DESC');
