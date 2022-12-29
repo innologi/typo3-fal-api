@@ -50,8 +50,7 @@ class MockFileFactory implements SingletonInterface
     protected function getSitePath()
     {
         if ($this->sitePath === null) {
-            // @extensionScannerIgnoreLine
-            $this->sitePath = \version_compare(TYPO3_version, '9.4', '<') ? PATH_site : \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
+            $this->sitePath = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
         }
         return $this->sitePath;
     }

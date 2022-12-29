@@ -79,20 +79,6 @@ class FileReferenceRepository implements SingletonInterface
      */
     public function injectDataHandler(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
-        /*
-         * datahandler does resorting of records if they have a sortby,
-         * which causes a BIG and ever growing delay the larger the table gets,
-         * completely fucking over our i.e. migration speed, but this sorting field
-         * is never relevant to our usage of sys_file_reference, luckily the
-         * field is disabled and removed in TYPO3 >8.7
-         *
-         * @see https://forge.typo3.org/issues/80800
-         * @see https://forge.typo3.org/issues/83160
-         */
-        if (version_compare(TYPO3_branch, '8.7', '<=') && isset($GLOBALS['TCA'][$this->referenceTable]['ctrl']['sortby'])) {
-            unset($GLOBALS['TCA'][$this->referenceTable]['ctrl']['sortby']);
-        }
-
         // don't need log entries for these
         $dataHandler->enableLogging = false;
         $this->dataHandler = $dataHandler;
