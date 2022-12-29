@@ -2,6 +2,7 @@
 namespace Innologi\TYPO3FalApi;
 
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -50,7 +51,9 @@ class MockFileFactory implements SingletonInterface
     protected function getSitePath()
     {
         if ($this->sitePath === null) {
-            $this->sitePath = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
+            /** @var Typo3Version $typo3Version */
+            $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+            $this->sitePath = $typo3Version->getMajorVersion() > 10 ? '' : \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
         }
         return $this->sitePath;
     }
