@@ -127,7 +127,7 @@ class MockFileFactory implements SingletonInterface
         }
 
         return GeneralUtility::makeInstance(MockFile::class, array_merge([
-            'name' => basename($data['identifier']),
+            'name' => basename((string) $data['identifier']),
             'missing' => 0,
             'modification_date' => 0
         ], $data), $storageObject);
