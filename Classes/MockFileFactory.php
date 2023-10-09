@@ -89,7 +89,7 @@ class MockFileFactory implements SingletonInterface
         $absolutePathPart = $this->getSitePath() . $storageObject->getConfiguration()['basePath'];
         // file identifier is relative to storage basePath
         // @TODO identifiers apparently are stored with a prefixed slash. Debug if we need to keep it here as well
-        $identifier = strpos($filePath, $absolutePathPart) === 0 ? str_replace($absolutePathPart, '', $filePath) : $filePath;
+        $identifier = str_starts_with($filePath, $absolutePathPart) ? str_replace($absolutePathPart, '', $filePath) : $filePath;
         return $this->create([
             'identifier' => $identifier,
             'modification_date' => (int) filemtime($filePath)

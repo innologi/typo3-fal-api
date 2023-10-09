@@ -92,7 +92,7 @@ class FileReferenceRepository implements SingletonInterface
     public function __construct()
     {
         // this is enough to keep our DataHandler-method-calls from failing outside of BE
-        $this->beUser = isset($GLOBALS['BE_USER']) ? $GLOBALS['BE_USER'] : GeneralUtility::makeInstance(\TYPO3\CMS\Core\Authentication\BackendUserAuthentication::class);
+        $this->beUser = $GLOBALS['BE_USER'] ?? GeneralUtility::makeInstance(\TYPO3\CMS\Core\Authentication\BackendUserAuthentication::class);
         // @TODO ___temp, remove once instructions are made?
         $this->beUser->user['admin'] = 1;
     }
