@@ -4,7 +4,7 @@ namespace Innologi\TYPO3FalApi;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * FileReference Domain Object factory
@@ -13,16 +13,13 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  * in the Parent Object. To persist correctly, you also need to add the following
  * TCA to the Parent Object's reference field:
  *
- * 'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
- *      '{fieldname}',
- *      [
- *          'foreign_match_fields' => [
- *              'fieldname' => '{fieldname}',
- *              'tablenames' => '{tablename}',
- *              'table_local' => 'sys_file',
- *          ],
- *      ]
- * ),
+ * 'config' => [
+ *     'type' => 'file',
+ *     'foreign_match_fields' => [
+ *         'fieldname' => '{fieldname}',
+ *         'tablenames' => '{tablename},
+ *     ],
+ * ],
  *
  * @package TYPO3FalApi
  * @author Frenck Lutke
@@ -31,37 +28,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 class FileReferenceFactory implements SingletonInterface
 {
 
-    /**
-     *
-     * @var ResourceFactory
-     */
-    protected $resourceFactory;
-
-    /**
-     *
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
-
-    /**
-     *
-     * @param ResourceFactory $resourceFactory
-     * @return void
-     */
-    public function injectResourceFactory(ResourceFactory $resourceFactory)
-    {
-        $this->resourceFactory = $resourceFactory;
-    }
-
-    /**
-     *
-     * @param ObjectManagerInterface $objectManager
-     * @return void
-     */
-    public function injectObjectManager(ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
-    }
+    public function __construct(
+        protected readonly ResourceFactory $resourceFactory,
+    ) {}
 
     /**
      * Creates and returns domain object from filepath.
@@ -92,7 +61,7 @@ class FileReferenceFactory implements SingletonInterface
     public function create(array $data): FileReference
     {
         /* @var $object FileReference */
-        $object = $this->objectManager->get(FileReference::class);
+        $object = GeneralUtility::makeInstance(FileReference::class);
         // all you really need is an 'uid_local' key with the File uid as value for it
         // to persist correctly. Below method will throw an exception if missing.
         // @TODO document why you're setting a FileReference as the original resource to our new FileReference

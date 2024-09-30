@@ -15,13 +15,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class MockFileFactory implements SingletonInterface
 {
-
-    /**
-     *
-     * @var ResourceFactory
-     */
-    protected $resourceFactory;
-
     /**
      *
      * @var array
@@ -34,15 +27,9 @@ class MockFileFactory implements SingletonInterface
      */
     protected $sitePath;
 
-    /**
-     *
-     * @param ResourceFactory $resourceFactory
-     * @return void
-     */
-    public function injectResourceFactory(ResourceFactory $resourceFactory)
-    {
-        $this->resourceFactory = $resourceFactory;
-    }
+    public function __construct(
+        protected readonly ResourceFactory $resourceFactory,
+    ) {}
 
     /**
      *

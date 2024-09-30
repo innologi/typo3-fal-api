@@ -5,6 +5,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\DebugUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 
 /**
@@ -33,27 +34,9 @@ class FileReferenceRepository implements SingletonInterface
 
     /**
      *
-     * @var string
-     */
-    protected $localTable = 'sys_file';
-
-    /**
-     *
      * @var integer
      */
     protected $storagePid = 0;
-
-    /**
-     *
-     * @var \TYPO3\CMS\Core\DataHandling\DataHandler
-     */
-    protected $dataHandler;
-
-    /**
-     *
-     * @var ResourceFactory
-     */
-    protected $resourceFactory;
 
     /**
      *
@@ -62,35 +45,17 @@ class FileReferenceRepository implements SingletonInterface
     protected $beUser;
 
     /**
-     *
-     * @param ResourceFactory $resourceFactory
-     * @return void
-     */
-    public function injectResourceFactory(ResourceFactory $resourceFactory)
-    {
-        $this->resourceFactory = $resourceFactory;
-    }
-
-    /**
-     * Injects DataHandler
-     *
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
-     * @return void
-     */
-    public function injectDataHandler(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
-    {
-        // don't need log entries for these
-        $dataHandler->enableLogging = false;
-        $this->dataHandler = $dataHandler;
-    }
-
-    /**
      * Class constructor
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct(
+        protected readonly ResourceFactory $resourceFactory,
+        protected readonly DataHandler $dataHandler,
+    ) {
+        // don't need log entries for these
+        $this->dataHandler->enableLogging = false;
+
         // this is enough to keep our DataHandler-method-calls from failing outside of BE
         $this->beUser = $GLOBALS['BE_USER'] ?? GeneralUtility::makeInstance(\TYPO3\CMS\Core\Authentication\BackendUserAuthentication::class);
         // @TODO ___temp, remove once instructions are made?
@@ -120,7 +85,6 @@ class FileReferenceRepository implements SingletonInterface
             $this->referenceTable => [
                 $referenceUid => [
                     'uid_local' => $fileUid,
-                    'table_local' => $this->localTable,
                     'uid_foreign' => $foreignUid,
                     'tablenames' => $foreignTable,
                     'fieldname' => $foreignField,
@@ -193,7 +157,6 @@ class FileReferenceRepository implements SingletonInterface
     public function upsertRecord(int $fileUid, string $foreignTable, int $foreignUid, string $foreignField): void
     {
         $row = $this->findOneByData([
-            'table_local' => $this->localTable,
             'uid_foreign' => $foreignUid,
             'tablenames' => $foreignTable,
             'fieldname' => $foreignField
